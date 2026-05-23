@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import { chatRoutes } from "./modules/chat/chat.routes";
 
 const app = Fastify({
     logger: true
@@ -7,6 +8,8 @@ const app = Fastify({
 app.get("/", async () => {
     return { ok: true, service: "Ribeira API" }
 })
+
+app.register(chatRoutes)
 
 
 app.listen({ port: 3333 }, (err, address) => {
