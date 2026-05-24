@@ -1,11 +1,8 @@
-import { detectIntent }
-from "./intent-detector";
+import { openaiClient }
+from "../../services/openai/client";
 
-import { retrieveEvents }
-from "../retrievers/events.retriever";
-
-import { retrievePlaces }
-from "../retrievers/places.retriever";
+import { searchTouristSpots }
+from "../retrievers/tourist-spots.semantic";
 
 import { buildContext }
 from "../context/build-context";
@@ -13,45 +10,29 @@ from "../context/build-context";
 import { mainPrompt }
 from "../prompts/main.prompt";
 
-import { openaiClient }
-from "../../services/openai/client";
-
-import { semanticSearch }
-from "../retrievers/semantic.retriever";
-
 export async function chatOrchestrator(
   message: string
 ) {
 
-  const intent =
-    await detectIntent(message);
-
-  const events =
-    await retrieveEvents({
-      city: intent.city
-    });
-
-  const places =
-    await retrievePlaces(
-      intent.city
+  const touristSpots =
+    await searchTouristSpots(
+      message
     );
-
-  const semanticPlaces =
-    await semanticSearch(message);
 
   const context =
     buildContext({
-      events,
-      places: semanticPlaces
+      touristSpots
     });
 
   const completion =
     await openaiClient.chat.completions.create({
-      model: "gpt-4.1",
+      model: "gpt-4.1-mini",
+
       messages: [
         {
           role: "system",
-          content: mainPrompt(context)
+          content:
+            mainPrompt(context)
         },
         {
           role: "user",
@@ -61,16 +42,16 @@ export async function chatOrchestrator(
     });
 
   return {
+
     response:
       completion.choices[0]
         .message.content,
+
     metadata: {
-      intent,
-      totalEvents:
-        events.length,
-      totalPlaces:
-        places.length
+      retrievedSpots:
+        touristSpots.length
     }
+
   };
 
 }

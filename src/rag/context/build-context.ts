@@ -1,45 +1,31 @@
 interface BuildContextInput {
-  events?: any[];
-  places?: any[];
+  touristSpots?: any[];
 }
 
 export function buildContext({
-  events = [],
-  places = []
+  touristSpots = []
 }: BuildContextInput) {
 
   let context = "";
 
-  if (events.length) {
+  if (touristSpots.length) {
 
     context += `
-EVENTOS:
+PONTOS TURÍSTICOS:
 
 `;
 
-    for (const event of events) {
+    for (const spot of touristSpots) {
+
       context += `
-Título: ${event.title}
-Descrição: ${event.description}
-Cidade: ${event.city}
-Data: ${event.start_date}
+Nome:
+${spot.metadata?.name || ""}
 
-`;
-    }
-  }
+Conteúdo:
+${spot.content}
 
-  if (places.length) {
-
-    context += `
-LUGARES:
-
-`;
-
-    for (const place of places) {
-      context += `
-Nome: ${place.name}
-Descrição: ${place.description}
-Cidade: ${place.city}
+Similaridade:
+${spot.similarity}
 
 `;
     }
