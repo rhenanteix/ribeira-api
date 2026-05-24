@@ -16,6 +16,9 @@ from "../prompts/main.prompt";
 import { openaiClient }
 from "../../services/openai/client";
 
+import { semanticSearch }
+from "../retrievers/semantic.retriever";
+
 export async function chatOrchestrator(
   message: string
 ) {
@@ -33,10 +36,13 @@ export async function chatOrchestrator(
       intent.city
     );
 
+  const semanticPlaces =
+    await semanticSearch(message);
+
   const context =
     buildContext({
       events,
-      places
+      places: semanticPlaces
     });
 
   const completion =
