@@ -1,16 +1,50 @@
-export function buildContext(
-  events: any[]
-) {
+interface BuildContextInput {
+  events?: any[];
+  places?: any[];
+}
 
-  return events.map(event => `
-Evento:
-${event.title}
+export function buildContext({
+  events = [],
+  places = []
+}: BuildContextInput) {
 
-Descrição:
-${event.description}
+  let context = "";
 
-Data:
-${event.start_date}
-  `).join("\n");
+  if (events.length) {
 
+    context += `
+EVENTOS:
+
+`;
+
+    for (const event of events) {
+      context += `
+Título: ${event.title}
+Descrição: ${event.description}
+Cidade: ${event.city}
+Data: ${event.start_date}
+
+`;
+    }
+  }
+
+  if (places.length) {
+
+    context += `
+LUGARES:
+
+`;
+
+    for (const place of places) {
+      context += `
+Nome: ${place.name}
+Descrição: ${place.description}
+Cidade: ${place.city}
+
+`;
+    }
+
+  }
+
+  return context;
 }

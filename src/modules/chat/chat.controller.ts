@@ -1,48 +1,28 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { openaiClient } from "../../services/openai/client";
-import { eventsRetriever } from "../../rag/retrievers/events.retriever";
-import { buildContext } from "../../rag/context/build-context";
+import {
+  FastifyReply,
+  FastifyRequest
+} from "fastify";
+
+import {
+  ChatInput
+} from "./chat.schema";
+
+import {
+  chatOrchestrator
+} from "../../rag/orchestrator/chat.orchestrator";
 
 export async function chatController(
-  request: FastifyRequest,
+  request: FastifyRequest<{
+    Body: ChatInput;
+  }>,
   reply: FastifyReply
 ) {
 
-  const body = request.body as {
-    message: string;
-  };
+  const { message } = request.body;
 
-  const events =
-    await eventsRetriever(body.message);
+  const result =
+    await chatOrchestrator(message);
 
-  const context =
-    buildContext(events);
+  return reply.send(result);
 
-  const completion =
-    await openaiClient.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [
-        {
-           role: "system",
-  content: `
-Você é a IA da Ribeira Connect.
-
-Contexto:
-${context}
-
-Use SOMENTE o contexto acima.
-Nunca invente eventos.
-`
-        },
-        {
-          role: "user",
-          content: body.message
-        }
-      ]
-    });
-
-  return reply.send({
-    response:
-      completion.choices[0].message.content
-  });
 }

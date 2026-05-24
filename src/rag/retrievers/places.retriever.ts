@@ -1,15 +1,9 @@
 import { supabaseClient } from "../../services/supabase/client";
 
-interface RetrieveEventsInput {
-  city?: string;
-}
-
-export async function retrieveEvents({
-  city
-}: RetrieveEventsInput) {
+export async function retrievePlaces(city?: string) {
 
   let query = supabaseClient
-    .from("events")
+    .from("places")
     .select("*")
     .limit(10);
 
