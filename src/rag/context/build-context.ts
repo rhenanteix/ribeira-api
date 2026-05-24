@@ -19,15 +19,13 @@ PONTOS TURÍSTICOS:
 
       context += `
 Nome:
-${spot.metadata?.name || ""}
+${spot.metadata?.name}
 
 Conteúdo:
 ${spot.content}
 
-Similaridade:
-${spot.similarity}
-
 `;
+
     }
 
   }

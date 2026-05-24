@@ -27,7 +27,6 @@ export async function searchTouristSpots(
     );
 
   if (error) {
-    console.error(error);
     throw error;
   }
 

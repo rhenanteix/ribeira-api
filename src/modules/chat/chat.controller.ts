@@ -1,28 +1,29 @@
-import {
-  FastifyReply,
-  FastifyRequest
-} from "fastify";
+import { FastifyReply }
+from "fastify";
 
-import {
-  ChatInput
-} from "./chat.schema";
+import { FastifyRequest }
+from "fastify";
 
-import {
-  chatOrchestrator
-} from "../../rag/orchestrator/chat.orchestrator";
+import { chatOrchestrator }
+from "../../rag/orchestrator/chat.orchestrator";
 
 export async function chatController(
   request: FastifyRequest<{
-    Body: ChatInput;
+    Body: {
+      message: string;
+    };
   }>,
   reply: FastifyReply
 ) {
 
-  const { message } = request.body;
+  const { message } =
+    request.body;
 
-  const result =
-    await chatOrchestrator(message);
+  const response =
+    await chatOrchestrator(
+      message
+    );
 
-  return reply.send(result);
+  return reply.send(response);
 
 }
